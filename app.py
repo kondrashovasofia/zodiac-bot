@@ -4,10 +4,9 @@ from flask import Flask
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-import threading
 
-# ========== ТОКЕН (замените на новый от BotFather) ==========
-TOKEN = "8853216028:AAHn5WQalMxZEkxw6Ikv-XpDtLtjB-CY9-Q"
+# ========== ТОКЕН ==========
+TOKEN = "8853216028:AAHn5WQalMxZEkxw6Ikv-XpDtLtjB-CY9-Q"  # ВСТАВЬТЕ СВОЙ ТОКЕН!
 
 # ========== ССЫЛКИ НА КАНАЛЫ ==========
 LINKS = {
@@ -74,13 +73,6 @@ async def handle_callback(callback: types.CallbackQuery):
         await callback.message.answer("❌ Ссылка не найдена.")
     await callback.answer()
 
-# ========== ЗАПУСК БОТА В ОТДЕЛЬНОМ ПОТОКЕ (правильный способ) ==========
-def run_bot():
-    """Запускает бота в отдельном потоке с правильным event loop"""
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(dp.start_polling(bot, skip_updates=True))
-
 # ========== FLASK ПРИЛОЖЕНИЕ ДЛЯ RENDER ==========
 app = Flask(__name__)
 
@@ -94,10 +86,17 @@ def health():
 
 # ========== ТОЧКА ВХОДА ==========
 if __name__ == "__main__":
-    # Запускаем бота в фоновом потоке
-    bot_thread = threading.Thread(target=run_bot, daemon=True)
-    bot_thread.start()
-    
     # Запускаем Flask сервер (главный поток)
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    
+    # Запускаем бота в том же потоке без использования сигналов
+    async def main():
+        await dp.start_polling(bot, skip_updates=True)
+    
+    # Запускаем Flask в отдельном потоке
+    import threading
+    flask_thread = threading.Thread(target=lambda: app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False))
+    flask_thread.start()
+    
+    # Запускаем бота в основном потоке (избегаем проблем с сигналами)
+    asyncio.run(main())
