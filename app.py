@@ -19,9 +19,9 @@ LINKS = {
     "Весы": "https://t.me/Libra12121",
     "Скорпион": "https://t.me/scorpi12121",
     "Стрелец": "https://t.me/Sagittarius12121",
-    "Козерог": "https://t.me/+Pa_pHFcaaVg3MzEy",
+    "Козерог": "https://t.me/+MEUUmwPaohg4NWZi",
     "Водолей": "https://t.me/+TvlMA37fFxpmNzcy",
-    "Рыбы": "https://t.me/+6DDnaRvP_KM0NTYy",
+    "Рыбы": "https://t.me/+ovHXyLVCJSc4OTQy",
     "✨ Общий гороскоп на сегодня ✨": "https://t.me/YourAstro12"
 }
 
